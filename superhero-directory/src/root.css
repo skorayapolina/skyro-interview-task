@@ -23,3 +23,11 @@ h5,
 h6 {
   font-family: var(--font-display);
 }
+
+input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 40rem var(--color-green-100) inset;
+}

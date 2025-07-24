@@ -1,27 +1,42 @@
-/*
 import { config } from '~shared/config';
+import { fetcher } from '~shared/lib/api';
 import { ResponseError, ResponseSuccess } from '~shared/response';
 
-import { useQuery } from '@tanstack/react-query';
+import { skipToken, useQuery } from '@tanstack/react-query';
 
 import { superheroKeys } from './keys';
 
 import { Superhero } from '../superhero';
 
-type ResponsePayload = {
-  'results-for': string;
-  results: Superhero[];
-};
+type ResponsePayload =
+  | {
+      response: 'success';
+      'results-for': string;
+      results: Superhero[];
+    }
+  | {
+      response: 'error';
+      error: string;
+    };
 
 export type Params = {
   query: string;
 };
 
-export function useSearchSuperheros(params: Params) {
+export function useSearchSuperheroes(params: Params) {
   const { query } = params;
 
-  // Method documentation: https://superheroapi.com/#name
-  // Example call: GET https://superheroapi.com/api/${access-token}/search/${superhero-name}
-  return useQuery({});
+  return useQuery({
+    queryKey: superheroKeys.search(query),
+    queryFn: query
+      ? async ({ signal }) => {
+          return fetcher<ResponseSuccess<ResponsePayload> | ResponseError>(
+            `${config.apiHost}/api/${config.apiToken}/search/${query}`,
+            {
+              signal,
+            }
+          );
+        }
+      : skipToken,
+  });
 }
- */
